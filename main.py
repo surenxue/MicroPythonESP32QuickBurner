@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import serial.tools.list_ports
 import json
+import icon
 import espProsess
 import os
 
@@ -14,7 +15,8 @@ global_options = {
     "last_port"      : 0,
     "skin_mode"      : "Classic",
     "selected_bin"   : None,
-    "status_line"    : ""
+    "status_line"    : "",
+    "Bin_list"       : None,
 }
 
 def gridWidgets():
@@ -32,6 +34,7 @@ def gridWidgets():
 def init_funcs():
     """启动时运行的动作"""
     fresh_files()
+    load_config()
     NowBin.configure(text=f"当前选择: {global_options['selected_bin']}")
 
 def fresh_files():
@@ -40,6 +43,7 @@ def fresh_files():
     for i in os.listdir():
         if os.path.isfile(i) and i.endswith(".bin"):
             tree.insert(tk.END, i)
+    global_options["Bin_list"] = list(tree.get(0, tk.END))
 
 def fresh_ports():
     """选择一个端口"""
@@ -80,6 +84,7 @@ def burn_file():
         print(file_name, port)
         espProsess.erase_flash(port, stdout=change_state)
         espProsess.write_flash(port, file_name, stdout=change_state)
+    save_config()
 
 def set_Bin(*args):
     file_name = tree.get(0, tk.END)[tree.curselection()[0]]
@@ -97,8 +102,22 @@ def load_config():
             temp_options = global_options
     fresh_ports()
     if temp_options["temp_ports_list"] == global_options["temp_ports_list"]:
-        comboPort.set(temp_options["last_port"])
+        comboPort.set(global_options["port_discribe_list"][temp_options["last_port"]])
+    if temp_options["Bin_list"] == global_options["Bin_list"]:
+        global_options['selected_bin'] = temp_options["selected_bin"]
+        NowBin.configure(text=f"当前选择: {global_options['selected_bin']}")
 
+def save_config():
+    with open("config.json", 'w') as js_file:
+        js_string = json.dumps(global_options, sort_keys=True, indent=4, separators=(',', ': '))
+        js_file.write(js_string)
+
+def get_icon():
+    if os.path.exists("temp.ico"):
+        root.iconbitmap("temp.ico")
+    else:
+        root.iconbitmap(icon.write_icon())
+        
 frameTree = tk.LabelFrame(root,text="选择镜像文件")
 NowBin    = tk.Label(frameTree, text="当前选择:")
 sb = tk.Scrollbar(frameTree)
@@ -121,6 +140,7 @@ NowState   = tk.Label(root, text="欢迎使用")
 
 
 def main():
+    get_icon()
     init_funcs()
     gridWidgets()
     root.mainloop()
