@@ -102,7 +102,8 @@ def load_config():
             temp_options = global_options
     fresh_ports()
     if temp_options["temp_ports_list"] == global_options["temp_ports_list"]:
-        comboPort.set(global_options["port_discribe_list"][temp_options["last_port"]])
+        if temp_options["temp_ports_list"]:
+            comboPort.set(global_options["port_discribe_list"][temp_options["last_port"]])
     if temp_options["Bin_list"] == global_options["Bin_list"]:
         global_options['selected_bin'] = temp_options["selected_bin"]
         NowBin.configure(text=f"当前选择: {global_options['selected_bin']}")
