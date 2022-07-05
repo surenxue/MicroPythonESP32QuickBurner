@@ -1,0 +1,21 @@
+{
+    "Bin_list": [
+        "esp32-20220618-v1.19.1.bin"
+    ],
+    "last_port": 3,
+    "port_discribe_list": [
+        "\u901a\u4fe1\u7aef\u53e3 (COM1)",
+        "\u84dd\u7259\u94fe\u63a5\u4e0a\u7684\u6807\u51c6\u4e32\u884c (COM3)",
+        "\u84dd\u7259\u94fe\u63a5\u4e0a\u7684\u6807\u51c6\u4e32\u884c (COM4)",
+        "USB-SERIAL CH340 (COM5)"
+    ],
+    "selected_bin": "esp32-20220618-v1.19.1.bin",
+    "skin_mode": "Classic",
+    "status_line": "",
+    "temp_ports_list": [
+        "COM1",
+        "COM3",
+        "COM4",
+        "COM5"
+    ]
+}

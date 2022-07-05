@@ -3,7 +3,8 @@ from tkinter import ttk
 import serial.tools.list_ports
 import json
 import icon
-import espProsess
+# import espProsess
+import espTest
 import os
 
 root = tk.Tk()
@@ -55,25 +56,30 @@ def fresh_ports():
     comboPort['values'] = ports
     global_options["port_discribe_list"] = ports
 
-def change_state(string:str):
-    """改变提示信息"""
-    if string == -1:
-        BurnButton.config(state="normal")
-    elif string == 1:
-        BurnButton.config(state="disabled")
-        global_options["status_line"] = ""
-        NowState.configure(text=global_options["status_line"])
-    else:
-        global_options["status_line"] += string
-        lines = global_options["status_line"].split("\n")
-        temp_lines = []
-        for i in lines:
-            if i:
-                temp_lines.append(i)
-        if len(temp_lines) > 4:
-            global_options["status_line"] = temp_lines[-4]+"\n"+\
-                temp_lines[-3]+"\n"+temp_lines[-2]+"\n"+temp_lines[-1]
-        NowState.configure(text=global_options["status_line"])
+class redirect:
+    """将烧录的输出信息重定向到用户界面底部"""
+    def write(self, string:str):
+        if string == -1:
+            BurnButton.config(state="normal")
+        elif string == 1:
+            BurnButton.config(state="disabled")
+            global_options["status_line"] = ""
+            NowState.configure(text=global_options["status_line"])
+        else:
+            global_options["status_line"] += string
+            lines = global_options["status_line"].split("\n")
+            temp_lines = []
+            for i in lines:
+                if i:
+                    temp_lines.append(i)
+            if len(temp_lines) > 4:
+                global_options["status_line"] = temp_lines[-4]+"\n"+\
+                    temp_lines[-3]+"\n"+temp_lines[-2]+"\n"+temp_lines[-1]
+            NowState.configure(text=global_options["status_line"])
+    def flush(*args):
+        pass
+    def isatty(*args):
+        pass
 
 def burn_file():
     """烧录文件"""
@@ -81,13 +87,17 @@ def burn_file():
     if file_name is not None and comboPort.current() != -1:
         global_options["last_port"] = comboPort.current()
         port = global_options["temp_ports_list"][comboPort.current()]
-        print(file_name, port)
-        espProsess.erase_flash(port, stdout=change_state)
-        espProsess.write_flash(port, file_name, stdout=change_state)
+        # print(file_name, port)
+        r = redirect()
+        espTest.erase_flash(port, stdout=r)
+        espTest.write_flash(port, file_name, stdout=r)
     save_config()
 
 def set_Bin(*args):
-    file_name = tree.get(0, tk.END)[tree.curselection()[0]]
+    try:
+        file_name = tree.get(0, tk.END)[tree.curselection()[0]]
+    except Exception as e:
+        file_name = None
     NowBin.configure(text=f"当前选择: {file_name}")
     global_options["selected_bin"] = file_name
 
