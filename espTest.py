@@ -16,14 +16,19 @@ def _burn_file(port:str, file:str, chip:str="auto", start='0x1000'):
 
 def erase_flash(port:str, chip:str="auto", stdout=None):
     '''清空内存'''
+    msg = ''
     def func():
         portLock.acquire()
         if stdout:
             old_stdout = sys.stdout
             sys.stdout = stdout
             stdout.write(1)
-        _erase_flash(port, chip)
+        try:
+            _erase_flash(port, chip)
+        except Exception as e:
+            msg = str(e)
         if stdout:
+            stdout.write(msg)
             stdout.write(-1)
             sys.stdout = old_stdout
         portLock.release()
@@ -32,13 +37,19 @@ def erase_flash(port:str, chip:str="auto", stdout=None):
 def write_flash(port:str, file:str, chip:str="auto", stdout=None, start='0x1000'):
     """烧录文件"""
     def func():
+        msg = ''
         portLock.acquire()
         if stdout:
             old_stdout = sys.stdout
             sys.stdout = stdout
             stdout.write(1)
-        _burn_file(port, file, chip, start)
+        try:    
+            _burn_file(port, file, chip, start)
+        except Exception as e:
+            msg = str(e)
+            msg += '烧录失败,请检查是否进入下载模式\n'
         if stdout:
+            stdout.write(msg)
             stdout.write(-1)
             sys.stdout = old_stdout
         portLock.release()
