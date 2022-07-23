@@ -16,8 +16,8 @@ def _burn_file(port:str, file:str, chip:str="auto", start='0x1000'):
 
 def erase_flash(port:str, chip:str="auto", stdout=None):
     '''清空内存'''
-    msg = ''
     def func():
+        msg = ' '
         portLock.acquire()
         if stdout:
             old_stdout = sys.stdout
@@ -37,7 +37,7 @@ def erase_flash(port:str, chip:str="auto", stdout=None):
 def write_flash(port:str, file:str, chip:str="auto", stdout=None, start='0x1000'):
     """烧录文件"""
     def func():
-        msg = ''
+        msg = ' '
         portLock.acquire()
         if stdout:
             old_stdout = sys.stdout
