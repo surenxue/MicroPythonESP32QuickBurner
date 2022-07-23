@@ -9,8 +9,8 @@ def _erase_flash(port:str, chip:str="auto"):
     print('Using command %s' % ' '.join(command))
     esptool.main(command)
 
-def _burn_file(port:str, file:str, chip:str="auto"):
-    command = ['--chip', chip, '--baud', '460800', '--port', port, '--connect-attempts', '3', 'write_flash', '-z', '0x1000', file]
+def _burn_file(port:str, file:str, chip:str="auto", start='0x1000'):
+    command = ['--chip', chip, '--baud', '460800', '--port', port, '--connect-attempts', '3', 'write_flash', '-z', start, file]
     print('Using command %s' % ' '.join(command))
     esptool.main(command)
 
@@ -29,7 +29,7 @@ def erase_flash(port:str, chip:str="auto", stdout=None):
         portLock.release()
     threading.Thread(target=func).start()
 
-def write_flash(port:str, file:str, chip:str="auto", stdout=None):
+def write_flash(port:str, file:str, chip:str="auto", stdout=None, start='0x1000'):
     """烧录文件"""
     def func():
         portLock.acquire()
@@ -37,7 +37,7 @@ def write_flash(port:str, file:str, chip:str="auto", stdout=None):
             old_stdout = sys.stdout
             sys.stdout = stdout
             stdout.write(1)
-        _burn_file(port, file, chip)
+        _burn_file(port, file, chip, start)
         if stdout:
             stdout.write(-1)
             sys.stdout = old_stdout

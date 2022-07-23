@@ -18,7 +18,10 @@ global_options = {
     "selected_bin"   : None,
     "status_line"    : "",
     "Bin_list"       : None,
+    "ChipType"       : "ESP32"
 }
+
+
 
 def gridWidgets():
     frameTree.pack(padx=10)
@@ -29,8 +32,10 @@ def gridWidgets():
     tree.pack(padx=0, pady=0)
     NowBin.pack(pady=5, anchor=tk.W)
     comboPort.grid(row=0, column=0)
-    BurnButton.grid(row=0, column=1)
+    BurnButton.grid(row=1, column=1)
+    frameChip.grid(row=0, column=1)
     NowState.pack(pady=5, anchor=tk.W)
+    strChosen.pack()
 
 def init_funcs():
     """启动时运行的动作"""
@@ -89,8 +94,12 @@ def burn_file():
         port = global_options["temp_ports_list"][comboPort.current()]
         # print(file_name, port)
         r = redirect()
+        if global_options["ChipType"] == "ESP32":
+            start = '0x1000'
+        else:
+            start = '0x0000'
         espTest.erase_flash(port, stdout=r)
-        espTest.write_flash(port, file_name, stdout=r)
+        espTest.write_flash(port, file_name, stdout=r, start=start)
     save_config()
 
 def set_Bin(*args):
@@ -117,6 +126,14 @@ def load_config():
     if temp_options["Bin_list"] == global_options["Bin_list"]:
         global_options['selected_bin'] = temp_options["selected_bin"]
         NowBin.configure(text=f"当前选择: {global_options['selected_bin']}")
+    
+    try:
+        for k, i in enumerate(strChosen['values']):
+            if i == temp_options['ChipType']:
+                strChosen.current(k)
+                global_options["ChipType"] = i
+    except:
+        pass
 
 def save_config():
     with open("config.json", 'w') as js_file:
@@ -128,6 +145,10 @@ def get_icon():
         root.iconbitmap("temp.ico")
     else:
         root.iconbitmap(icon.write_icon())
+
+def setChipType(*args):
+    global global_options
+    global_options["ChipType"]=chipTypeTkVar.get()
         
 frameTree = tk.LabelFrame(root,text="选择镜像文件")
 NowBin    = tk.Label(frameTree, text="当前选择:")
@@ -141,6 +162,7 @@ sb.config(command=tree.yview)
 sb1.config(command=tree.xview)
 frameLower = tk.Frame(root)
 framePort = tk.LabelFrame(frameLower,text="选择端口")
+frameChip = tk.LabelFrame(frameLower,text="芯片型号")
 portIndex = tk.StringVar()
 comboPort = ttk.Combobox(framePort, width=20, textvariable=portIndex, 
                 state='readonly', postcommand=fresh_ports)
@@ -148,6 +170,14 @@ comboPort = ttk.Combobox(framePort, width=20, textvariable=portIndex,
 comboPort['values'] = []
 BurnButton = ttk.Button(frameLower, width=8, text="烧录", command=burn_file)
 NowState   = tk.Label(root, text="欢迎使用")
+
+# 信号发送方式列表
+chipTypeTkVar = tk.StringVar()
+strChosen = ttk.Combobox(frameChip, width=10, textvariable=chipTypeTkVar, state='readonly')
+strChosen['values'] = ["ESP32", "ESP32C3",'ESP32S2', "ESP32S3", "ESP8266"]  # 设置下拉列表的值
+strChosen.current(0)
+strChosen.bind('<<ComboboxSelected>>', setChipType)
+
 
 
 def main():
