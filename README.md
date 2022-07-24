@@ -5,7 +5,7 @@
 ![image](https://user-images.githubusercontent.com/58870893/180613201-436a6cf0-6a6d-4349-9132-56fa20d0b4d8.png)
 # 特性
 1. 使用官方esptool工具封装，使用稳定
-2. 打包好的exe程序内置esptool，无须任何配置即可烧录固件
+2. [打包好的exe程序](https://github.com/umeiko/MicroPythonESP32QuickBurner/releases/download/esp32MPYQB_lastest/MicroPythonESP32QuickBurner.exe)内置esptool，无须任何配置即可烧录固件
 3. 记住上次下载的固件，连接的端口号及芯片型号，使用方便
 # 使用方法
 在图形界面中直接选择固件，选择使用的端口及芯片型号进行烧录即可
