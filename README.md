@@ -18,3 +18,5 @@
     - 在[这里](https://micropython.org/download/?port=esp32)
 4. 可以用来下载自制的其它.bin固件吗
     - 可以
+5. 可用固件列表总是空的
+    - 将固件文件与本程序放在同一目录下，确保固件后缀为.bin
