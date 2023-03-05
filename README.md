@@ -1,4 +1,4 @@
-# ESPTOOL-GUI
+# MicroPythonESP32QuickBurner
 快捷将MicroPython固件烧录到esp32，esp8266等单片机
 
 
