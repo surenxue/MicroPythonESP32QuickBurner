@@ -14,7 +14,7 @@
     - 芯片需要手动进入下载模式(按住boot，按下rst一次)
 2. 芯片烧录后无限重启
     - 选择正确的固件及芯片型号
-3. 在哪里下载micropython固件
+3. 在哪里下载MicroPython固件
     - 在[这里](https://micropython.org/download/?port=esp32)
 4. 可以用来下载自制的其它.bin固件吗
     - 可以
